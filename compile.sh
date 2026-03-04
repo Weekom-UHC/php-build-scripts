@@ -1448,10 +1448,6 @@ git submodule update --init --recursive >> "$DIR/install.log" 2>&1
 cd "$BUILD_DIR/php"
 write_done
 
-echo -n "  mongo: downloading mongo..."
-git clone --depth 1 --recurse-submodules https://github.com/mongodb/mongo-php-driver.git "$BUILD_DIR/php/ext/mongo" >> "$DIR/install.log" 2>&1
-write_done
-
 get_github_extension "snappy" "$EXT_SNAPPY_VERSION" "kjdev" "php-ext-snappy"
 
 get_github_extension "leveldb" "$EXT_LEVELDB_VERSION" "pmmp" "php-leveldb"
@@ -1739,7 +1735,6 @@ $HAVE_MYSQLI \
 --enable-xxhash \
 --enable-arraydebug \
 --enable-encoding \
---enable-mongodb \
 $HAVE_VALGRIND \
 $CONFIGURE_FLAGS >> "$DIR/install.log" 2>&1
 write_compile
