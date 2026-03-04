@@ -17,6 +17,7 @@ $LIBRDKAFKA_VER="2.12.1"
 $LIBZSTD_VER="1.5.7"
 $LIBGRPC_VER="1.76.0"
 $LIBSNAPPY_VER="1.2.2"
+$LIBMONGO_C_DRIVER_VER="1.28.0"
 
 $PHP_PMMPTHREAD_VER="6.3.0"
 $PHP_YAML_VER="2.3.0"
@@ -406,6 +407,37 @@ function download-php-deps {
     write-done
 }
 
+function build-mongo-c-driver {
+    write-library "mongo-c-driver" $LIBMONGO_C_DRIVER_VER
+    write-download
+    $file = download-file "https://github.com/mongodb/mongo-c-driver/archive/$LIBMONGO_C_DRIVER_VER.zip" "mongo-c-driver"
+
+    write-extracting
+    unzip-file $file $pwd
+    Move-Item "mongo-c-driver-$LIBMONGO_C_DRIVER_VER" mongo-c-driver >> $log_file 2>&1
+    Push-Location mongo-c-driver
+
+    write-configure
+    sdk-command "cmake -G `"$CMAKE_TARGET`" -A `"$ARCH`"^`
+        -DCMAKE_PREFIX_PATH=`"$DEPS_DIR`"^`
+        -DCMAKE_INSTALL_PREFIX=`"$DEPS_DIR`"^`
+        -DENABLE_AUTOMATIC_INIT_AND_CLEANUP=OFF^`
+        -DENABLE_STATIC=OFF^`
+        -DENABLE_TESTS=OFF^`
+        -DENABLE_EXAMPLES=OFF^`
+        -DENABLE_SSL=WINDOWS^`
+        . || exit 1"
+
+    write-compile
+    sdk-command "msbuild ALL_BUILD.vcxproj /p:Configuration=$MSBUILD_CONFIGURATION /m || exit 1"
+
+    write-install
+    sdk-command "msbuild INSTALL.vcxproj /p:Configuration=$MSBUILD_CONFIGURATION /m || exit 1"
+
+    write-done
+    Pop-Location
+}
+
 function build-snappy {
     write-library "snappy" $LIBSNAPPY_VER
     write-download
@@ -694,7 +726,7 @@ function download-php-extensions {
     get-github-extension "zstd"                  $PHP_ZSTD_VER                  "kjdev"     "php-ext-zstd"
     get-github-extension "grpc"                  $PHP_GRPC_VER                  "larryTheCoder" "php-grpc"
 
-    write-library "php-ext mongo" "latest"
+    write-library "php-ext mongodb" "latest"
     write-download
     (& cmd.exe /c "git clone --depth 1 --recurse-submodules https://github.com/mongodb/mongo-php-driver.git mongodb 2>&1") >> $log_file
     write-done
@@ -754,6 +786,8 @@ build-yaml
 #these two both need zlib from the standard deps
 build-leveldb
 build-libdeflate
+
+build-mongo-c-driver
 
 cd $BASE_PATH >> $log_file 2>&1
 
