@@ -694,6 +694,11 @@ function download-php-extensions {
     get-github-extension "zstd"                  $PHP_ZSTD_VER                  "kjdev"     "php-ext-zstd"
     get-github-extension "grpc"                  $PHP_GRPC_VER                  "larryTheCoder" "php-grpc"
 
+    write-library "php-ext mongo" "latest"
+    write-download
+    (& cmd.exe /c "git clone --depth 1 --recurse-submodules https://github.com/mongodb/mongo-php-driver.git mongodb 2>&1") >> $log_file
+    write-done
+
     # Vanilla generator depend on this folder, the compiler will not be able
     # to find these dependencies if the folder name were to change
     Move-Item "ext-chunkutils2-$PHP_CHUNKUTILS2_VER" "chunkutils2" -Force
@@ -792,6 +797,7 @@ sdk-command "configure^`
     --enable-grpc=shared^`
     --enable-protobuf=shared^`
     --enable-recursionguard=shared^`
+    --enable-mongodb=shared^`
     --enable-sockets^`
     --enable-tokenizer^`
     --enable-xmlreader^`
@@ -868,6 +874,7 @@ $php_ini="$outpath\bin\php\php.ini"
 
 #all this work to make PS output utf-8/ascii instead of utf-16 :(
 Out-File -FilePath $php_ini -Encoding ascii -InputObject ";Custom PocketMine-MP php.ini file"
+append-file-utf8 "extension=php_mongodb.dll" $php_ini
 append-file-utf8 "memory_limit=1024M" $php_ini
 append-file-utf8 "display_errors=1" $php_ini
 append-file-utf8 "display_startup_errors=1" $php_ini
