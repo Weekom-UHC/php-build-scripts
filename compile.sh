@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
-PHP_VERSIONS=("8.1.34" "8.2.30" "8.3.30" "8.4.17" "8.5.2")
+PHP_VERSIONS=("8.1.34" "8.2.30" "8.3.29" "8.4.16" "8.5.0")
 
 #### NOTE: Tags with "v" prefixes behave weirdly in the GitHub API. They'll be stripped in some places but not others.
-#### Use commit hashes to avoid this
+#### Use commit hashes to avoid this.
 
 ZLIB_VERSION="1.3.1"
 GMP_VERSION="6.3.0"
@@ -546,7 +546,7 @@ echo "}" >> test.c
 type $CC >> "$DIR/install.log" 2>&1 || { write_error "Please install \"$CC\""; exit 1; }
 
 if [ -z "$THREADS" ]; then
-	write_out "WARNING" "Only 1 thread is used by default. Increase thread count using -j (e.g. -j 4) to compile faster."	
+	write_out "WARNING" "Only 1 thread is used by default. Increase thread count using -j (e.g. -j 4) to compile faster."
 	THREADS=1;
 fi
 [ -z "$march" ] && march=native;
@@ -1448,6 +1448,10 @@ git submodule update --init --recursive >> "$DIR/install.log" 2>&1
 cd "$BUILD_DIR/php"
 write_done
 
+echo -n "  mongo: downloading mongo..."
+git clone --depth 1 --recurse-submodules https://github.com/mongodb/mongo-php-driver.git "$BUILD_DIR/php/ext/mongo" >> "$DIR/install.log" 2>&1
+write_done
+
 get_github_extension "snappy" "$EXT_SNAPPY_VERSION" "kjdev" "php-ext-snappy"
 
 get_github_extension "leveldb" "$EXT_LEVELDB_VERSION" "pmmp" "php-leveldb"
@@ -1735,6 +1739,7 @@ $HAVE_MYSQLI \
 --enable-xxhash \
 --enable-arraydebug \
 --enable-encoding \
+--enable-mongodb \
 $HAVE_VALGRIND \
 $CONFIGURE_FLAGS >> "$DIR/install.log" 2>&1
 write_compile
