@@ -2,7 +2,7 @@
 PHP_VERSIONS=("8.1.34" "8.2.30" "8.3.30" "8.4.17" "8.5.2")
 
 #### NOTE: Tags with "v" prefixes behave weirdly in the GitHub API. They'll be stripped in some places but not others.
-#### Use commit hashes to avoid this.
+#### Use commit hashes to avoid this
 
 ZLIB_VERSION="1.3.1"
 GMP_VERSION="6.3.0"
