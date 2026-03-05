@@ -868,7 +868,7 @@ sdk-command "configure^`
     --with-pdo-sqlite^`
     --without-readline"
 
-if ($PHP_VERSION_ID -ge 80500) {
+if ($PHP_VERSION_ID -ge 80400) {
     # Create all required extension directories, we do this manually because we exceeded Makefile length limit...
     create-extension-directories "$SOURCES_PATH\x64\Release_TS"
     (Get-Content -Path "$SOURCES_PATH\Makefile") -replace "^BUILD_DIRS_SUB=.*", "BUILD_DIRS_SUB=" | Set-Content -Path "$SOURCES_PATH\Makefile"
