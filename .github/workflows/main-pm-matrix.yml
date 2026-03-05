@@ -31,6 +31,9 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
+      - name: Enable Windows long paths
+        run: git config --system core.longpaths true
+
       - name: Install tools and dependencies
         run: |
           sudo apt-get update

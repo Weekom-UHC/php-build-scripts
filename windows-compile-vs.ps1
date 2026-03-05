@@ -444,7 +444,7 @@ function build-snappy {
     (& cmd.exe /c "git clone -b $LIBSNAPPY_VER https://github.com/google/snappy snappy 2>&1") >> $log_file
     Push-Location snappy
 
-    (& cmd.exe /c "git submodule update --depth=1 --init 2>&1") >> $log_file
+    (& cmd.exe /c "git submodule update --init --recursive --depth=1 2>&1") >> $log_file
 
     write-configure
     sdk-command "cmake -GNinja^`
