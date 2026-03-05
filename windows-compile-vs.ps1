@@ -875,7 +875,7 @@ if ($PHP_VERSION_ID -ge 80400) {
 }
 
 write-compile
-sdk-command "nmake"
+sdk-command "nmake /nologo /MP"
 
 write-install
 sdk-command "nmake snap"
