@@ -87,6 +87,9 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
+      - name: Install Ninja
+        run: choco install ninja -y
+
       - name: Prepare download cache
         id: download-cache
         uses: actions/cache@v4
@@ -119,6 +122,12 @@ jobs:
             compile.log
             windows-compile-vs.bat
           if-no-files-found: error
+      - name: Upload compile log
+        if: failure()
+        uses: actions/upload-artifact@v5
+        with:
+          name: compile-log
+          path: compile.log
 
 
   publish:
